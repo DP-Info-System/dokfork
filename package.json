@@ -64,7 +64,8 @@
 			"tree-sitter",
 			"tree-sitter-json",
 			"@prisma/engines",
-			"prisma"
+			"prisma",
+			"@prisma/client"
 		]
 	}
 }

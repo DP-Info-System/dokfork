@@ -44,17 +44,13 @@ else
 fi
 
 # SECTION 9 — ENV SETUP
-# If .env does not exist: copy from .env.example (if exists)
 if [ ! -f .env ]; then
-    if [ -f .env.example ]; then
-        cp .env.example .env
-    elif [ -f apps/dpploy/.env.example ]; then
-        echo "📄 Found .env.example in apps/dpploy, copying to root..."
-        cp apps/dpploy/.env.example .env
-    else
-        echo "📄 No .env.example found, creating new .env..."
-        touch .env
-    fi
+    echo "📄 Creating production .env file..."
+    echo "DATABASE_URL=postgres://dokploy:dokploypassword@localhost:5432/dokploy" > .env
+    echo "PORT=3000" >> .env
+    echo "NODE_ENV=production" >> .env
+else
+    echo "📄 .env file already exists, skipping creation..."
 fi
 
 # SECTION 10 — START SERVICES

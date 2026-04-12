@@ -73,7 +73,33 @@ fi
 echo "🚀 Starting services using Docker Compose..."
 docker compose up -d
 
-# SECTION 11 — FINAL OUTPUT
-IP_ADDR=$(curl -s ifconfig.me || hostname -I | awk '{print $1}')
+# SECTION 1 — WAIT FOR CONTAINERS
+echo "⏳ Waiting for services to start..."
+sleep 10
+
+# SECTION 2 — VERIFY CONTAINERS
+if [ -z "$(docker ps -q)" ]; then
+  echo "❌ Failed to start containers"
+  exit 1
+fi
+
+# SECTION 3 — GET SERVER IP
+SERVER_IP=$(curl -s ifconfig.me)
+
+# SECTION 4 — DETECT PORT
+PORT=3000
+
+# SECTION 5 — FINAL OUTPUT
+echo ""
 echo "✅ DPploy installed successfully!"
-echo "🌐 Access your panel at: http://$IP_ADDR:3000"
+echo ""
+echo "🌐 Access your panel:"
+echo "http://$SERVER_IP:$PORT"
+echo ""
+echo "➡️ Open this URL in your browser to complete signup"
+echo ""
+
+# SECTION 6 — OPTIONAL (BETTER UX)
+echo "⚠️ If not accessible:"
+echo "- Check firewall (port 3000 open)"
+echo "- Run: docker ps"

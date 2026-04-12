@@ -1,0 +1,79 @@
+#!/bin/bash
+set -e
+
+echo "🚀 Installing DPploy..."
+
+# SECTION 4 — CHECK ROOT
+if [ "$EUID" -ne 0 ]; then
+  echo "Please run as root"
+  exit 1
+fi
+
+# SECTION 5 — INSTALL DEPENDENCIES
+echo "📦 Installing system dependencies..."
+apt-get update
+apt-get install -y curl git
+
+# Install docker (if not installed)
+if ! command -v docker &> /dev/null; then
+    echo "🐳 Installing Docker..."
+    curl -fsSL https://get.docker.com | sh
+    systemctl enable docker
+    systemctl start docker
+fi
+
+# SECTION 6 — INSTALL DOCKER COMPOSE
+# If docker compose not available
+if ! docker compose version &> /dev/null; then
+    echo "🐳 Installing Docker Compose..."
+    apt-get update
+    apt-get install -y docker-compose
+fi
+
+# SECTION 7 — CLONE REPOSITORY
+# If folder exists: /opt/dpploy
+if [ -d "/opt/dpploy" ]; then
+    echo "📂 Repository already exists at /opt/dpploy, pulling latest changes..."
+    cd /opt/dpploy
+    git pull
+else
+    echo "📂 Cloning repository..."
+    git clone https://github.com/DP-Info-System/dokfork.git /opt/dpploy
+    # SECTION 8 — CHANGE DIRECTORY
+    cd /opt/dpploy
+fi
+
+# SECTION 9 — ENV SETUP
+# If .env does not exist: copy from .env.example (if exists)
+if [ ! -f .env ]; then
+    if [ -f .env.example ]; then
+        cp .env.example .env
+    elif [ -f apps/dpploy/.env.example ]; then
+        echo "📄 Found .env.example in apps/dpploy, copying to root..."
+        cp apps/dpploy/.env.example .env
+    else
+        echo "📄 No .env.example found, creating new .env..."
+        touch .env
+    fi
+fi
+
+# Prompt user for license key
+echo "🔑 Enter your license key:"
+read LICENSE_KEY
+
+# Append or update LICENSE_KEY in .env
+if grep -q "LICENSE_KEY=" .env; then
+    # Use sed to update if it exists
+    sed -i "s/^LICENSE_KEY=.*/LICENSE_KEY=$LICENSE_KEY/" .env
+else
+    echo "LICENSE_KEY=$LICENSE_KEY" >> .env
+fi
+
+# SECTION 10 — START SERVICES
+echo "🚀 Starting services using Docker Compose..."
+docker compose up -d
+
+# SECTION 11 — FINAL OUTPUT
+IP_ADDR=$(curl -s ifconfig.me || hostname -I | awk '{print $1}')
+echo "✅ DPploy installed successfully!"
+echo "🌐 Access your panel at: http://$IP_ADDR:3000"

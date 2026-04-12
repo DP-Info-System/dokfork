@@ -57,18 +57,6 @@ if [ ! -f .env ]; then
     fi
 fi
 
-# Prompt user for license key
-echo "🔑 Enter your license key:"
-read LICENSE_KEY
-
-# Append or update LICENSE_KEY in .env
-if grep -q "LICENSE_KEY=" .env; then
-    # Use sed to update if it exists
-    sed -i "s/^LICENSE_KEY=.*/LICENSE_KEY=$LICENSE_KEY/" .env
-else
-    echo "LICENSE_KEY=$LICENSE_KEY" >> .env
-fi
-
 # SECTION 10 — START SERVICES
 echo "🚀 Starting services using Docker Compose..."
 docker compose up -d
@@ -96,7 +84,8 @@ echo ""
 echo "🌐 Access your panel:"
 echo "http://$SERVER_IP:$PORT"
 echo ""
-echo "➡️ Open this URL in your browser to complete signup"
+echo "➡️ Open this URL in your browser"
+echo "➡️ Complete signup and subscription inside UI"
 echo ""
 
 # SECTION 6 — OPTIONAL (BETTER UX)

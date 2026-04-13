@@ -1,90 +1,126 @@
 #!/bin/bash
 set -e
 
-echo "🚀 Installing DPploy..."
+echo "🚀 Installing DPploy (Docker Swarm Mode)..."
 
-# SECTION 4 — CHECK ROOT
-if [ "$EUID" -ne 0 ]; then
-  echo "Please run as root"
-  exit 1
+# SECTION 1 — CHECK ROOT
+if [ "$(id -u)" != "0" ]; then
+    echo "This script must be run as root" >&2
+    exit 1
 fi
 
-# SECTION 5 — INSTALL DEPENDENCIES
+# SECTION 2 — SYSTEM CHECKS
 echo "📦 Installing system dependencies..."
 apt-get update
-apt-get install -y curl git
+apt-get install -u -y curl git
 
-# Install docker (if not installed)
+# SECTION 3 — INSTALL DOCKER
 if ! command -v docker &> /dev/null; then
     echo "🐳 Installing Docker..."
-    curl -fsSL https://get.docker.com | sh
+    curl -fsSL https://get.docker.com | sh -s -- --version 28.5.0
     systemctl enable docker
     systemctl start docker
 fi
 
-# SECTION 6 — INSTALL DOCKER COMPOSE
-# If docker compose not available
-if ! docker compose version &> /dev/null; then
-    echo "🐳 Installing Docker Compose..."
-    apt-get update
-    apt-get install -y docker-compose
-fi
-
-# SECTION 7 — CLONE REPOSITORY
-# If folder exists: /opt/dpploy
-if [ -d "/opt/dpploy" ]; then
-    echo "📂 Repository already exists at /opt/dpploy, pulling latest changes..."
-    cd /opt/dpploy
+# SECTION 4 — CLONE REPOSITORY
+REPO_PATH="/opt/dpploy"
+if [ -d "$REPO_PATH" ]; then
+    echo "📂 Repository exists, pulling latest changes..."
+    cd "$REPO_PATH"
     git pull
 else
     echo "📂 Cloning repository..."
-    git clone https://github.com/DP-Info-System/dokfork.git /opt/dpploy
-    # SECTION 8 — CHANGE DIRECTORY
-    cd /opt/dpploy
+    git clone https://github.com/DP-Info-System/dokfork.git "$REPO_PATH"
+    cd "$REPO_PATH"
 fi
 
-# SECTION 9 — ENV SETUP
-if [ ! -f .env ]; then
-    echo "📄 Creating production .env file..."
-    echo "DATABASE_URL=postgres://dokploy:dokploypassword@localhost:5432/dokploy" > .env
-    echo "PORT=3000" >> .env
-    echo "NODE_ENV=production" >> .env
-else
-    echo "📄 .env file already exists, skipping creation..."
+# SECTION 5 — IP DETECTION
+get_ip() {
+    local ip=$(curl -4s --connect-timeout 5 https://ifconfig.io 2>/dev/null)
+    if [ -z "$ip" ]; then
+        ip=$(curl -4s --connect-timeout 5 https://icanhazip.com 2>/dev/null)
+    fi
+    echo "$ip"
+}
+SERVER_IP=$(get_ip)
+ADVERTISE_ADDR="${ADVERTISE_ADDR:-$SERVER_IP}"
+echo "📡 Using Advertise Address: $ADVERTISE_ADDR"
+
+# SECTION 6 — SWARM INITIALIZATION
+if ! docker info | grep -q "Swarm: active"; then
+    echo "🐝 Initializing Docker Swarm..."
+    docker swarm init --advertise-addr "$ADVERTISE_ADDR"
 fi
 
-# SECTION 10 — START SERVICES
-echo "🚀 Starting services using Docker Compose..."
-docker compose up -d
+# SECTION 7 — NETWORKING & SECRETS
+echo "🕸️ Setting up overlay network..."
+docker network create --driver overlay --attachable dokploy-network 2>/dev/null || true
 
-# SECTION 1 — WAIT FOR CONTAINERS
-echo "⏳ Waiting for services to start..."
-sleep 10
+echo "🔑 Generating secure database credentials..."
+generate_random_password() {
+    openssl rand -base64 32 | tr -d "=+/" | cut -c1-32
+}
+POSTGRES_PASSWORD=$(generate_random_password)
+echo "$POSTGRES_PASSWORD" | docker secret create dokploy_postgres_password - 2>/dev/null || true
 
-# SECTION 2 — VERIFY CONTAINERS
-if [ -z "$(docker ps -q)" ]; then
-  echo "❌ Failed to start containers"
-  exit 1
-fi
+# SECTION 8 — BUILD IMAGE
+echo "🏗️ Building DPploy image locally (this may take a few minutes)..."
+docker build -t dpploy:latest .
 
-# SECTION 3 — GET SERVER IP
-SERVER_IP=$(curl -s ifconfig.me)
+# SECTION 9 — DEPLOY SERVICES
+echo "🚀 Deploying services to Swarm..."
 
-# SECTION 4 — DETECT PORT
-PORT=3000
+# Cleanup existing services to avoid conflicts on re-run
+docker service rm dokploy-postgres dokploy-redis dokploy 2>/dev/null || true
 
-# SECTION 5 — FINAL OUTPUT
+# Postgres Service
+docker service create \
+    --name dokploy-postgres \
+    --constraint 'node.role==manager' \
+    --network dokploy-network \
+    --env POSTGRES_USER=dokploy \
+    --env POSTGRES_DB=dokploy \
+    --secret source=dokploy_postgres_password,target=/run/secrets/postgres_password \
+    --env POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password \
+    --mount type=volume,source=dokploy-postgres,target=/var/lib/postgresql/data \
+    postgres:16-alpine
+
+# Redis Service
+docker service create \
+    --name dokploy-redis \
+    --constraint 'node.role==manager' \
+    --network dokploy-network \
+    --mount type=volume,source=dokploy-redis,target=/data \
+    redis:7-alpine
+
+# DPploy App Service
+docker service create \
+    --name dokploy \
+    --replicas 1 \
+    --network dokploy-network \
+    --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
+    --mount type=bind,source=/etc/dokploy,target=/etc/dokploy \
+    --secret source=dokploy_postgres_password,target=/run/secrets/postgres_password \
+    --publish published=3000,target=3000,mode=host \
+    --constraint 'node.role == manager' \
+    -e ADVERTISE_ADDR="$ADVERTISE_ADDR" \
+    -e DATABASE_URL="postgres://dokploy:$POSTGRES_PASSWORD@dokploy-postgres:5432/dokploy" \
+    dpploy:latest
+
+# Traefik Setup (Single instance via Docker Run for visibility, matches Dokploy logic)
+docker rm -f dokploy-traefik 2>/dev/null || true
+docker run -d \
+    --name dokploy-traefik \
+    --restart always \
+    --network dokploy-network \
+    -v /var/run/docker.sock:/var/run/docker.sock:ro \
+    -p 80:80 \
+    -p 443:443 \
+    traefik:v3.6.7
+
+# SECTION 10 — FINAL OUTPUT
 echo ""
-echo "✅ DPploy installed successfully!"
+echo "✅ Congratulations! DPploy is installed on Docker Swarm."
+echo "🌐 Access your panel at: http://$SERVER_IP:3000"
+echo "➡️ Complete your SaaS onboarding in the web UI."
 echo ""
-echo "🌐 Access your panel:"
-echo "http://$SERVER_IP:$PORT"
-echo ""
-echo "➡️ Open this URL in your browser"
-echo "➡️ Complete signup and subscription inside UI"
-echo ""
-
-# SECTION 6 — OPTIONAL (BETTER UX)
-echo "⚠️ If not accessible:"
-echo "- Check firewall (port 3000 open)"
-echo "- Run: docker ps"

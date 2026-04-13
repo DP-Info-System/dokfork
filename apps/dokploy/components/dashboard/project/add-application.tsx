@@ -77,8 +77,8 @@ export const AddApplication = ({ environmentId, projectName }: Props) => {
 
 	const hasServers = servers && servers.length > 0;
 	// Show dropdown logic based on cloud environment
-	// Cloud: show only if there are remote servers (no Dokploy option)
-	// Self-hosted: show only if there are remote servers (Dokploy is default, hide if no remote servers)
+	// Cloud: show only if there are remote servers (no DPPloy option)
+	// Self-hosted: show only if there are remote servers (DPPloy is default, hide if no remote servers)
 	const shouldShowServerDropdown = hasServers;
 
 	const { mutateAsync, isPending, error, isError } =
@@ -98,7 +98,7 @@ export const AddApplication = ({ environmentId, projectName }: Props) => {
 			name: data.name,
 			appName: data.appName,
 			description: data.description,
-			serverId: data.serverId === "dokploy" ? undefined : data.serverId,
+			serverId: data.serverId === "dpploy" ? undefined : data.serverId,
 			environmentId,
 		})
 			.then(async () => {
@@ -191,20 +191,20 @@ export const AddApplication = ({ environmentId, projectName }: Props) => {
 										<Select
 											onValueChange={field.onChange}
 											defaultValue={
-												field.value || (!isCloud ? "dokploy" : undefined)
+												field.value || (!isCloud ? "dpploy" : undefined)
 											}
 										>
 											<SelectTrigger>
 												<SelectValue
-													placeholder={!isCloud ? "Dokploy" : "Select a Server"}
+													placeholder={!isCloud ? "DPPloy" : "Select a Server"}
 												/>
 											</SelectTrigger>
 											<SelectContent>
 												<SelectGroup>
 													{!isCloud && (
-														<SelectItem value="dokploy">
+														<SelectItem value="dpploy">
 															<span className="flex items-center gap-2 justify-between w-full">
-																<span>Dokploy</span>
+																<span>DPPloy</span>
 																<span className="text-muted-foreground text-xs self-center">
 																	Default
 																</span>

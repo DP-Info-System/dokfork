@@ -17,13 +17,13 @@ mkdir -p $HOME/.ssh && \\
 chmod 700 $HOME/.ssh && \\
 touch $HOME/.ssh/authorized_keys && \\
 chmod 600 $HOME/.ssh/authorized_keys && \\
-cat /etc/dokploy/ssh/auto_generated-dokploy-local.pub >> $HOME/.ssh/authorized_keys && \\
-echo "✓ Dokploy SSH key added successfully. Reopen the terminal in Dokploy to reconnect."
+cat /etc/dpploy/ssh/auto_generated-dpploy-local.pub >> $HOME/.ssh/authorized_keys && \\
+echo "✓ DPPloy SSH key added successfully. Reopen the terminal in DPPloy to reconnect."
 # ----------------------------------------`;
 
 const COMMAND_TO_GRANT_PERMISSION_ACCESS = `
 # ----------------------------------------
-sudo chown -R $USER:$USER /etc/dokploy/ssh
+sudo chown -R $USER:$USER /etc/dpploy/ssh
 # ----------------------------------------
 `;
 

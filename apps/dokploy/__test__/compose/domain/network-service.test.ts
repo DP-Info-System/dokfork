@@ -1,33 +1,33 @@
-import { addDokployNetworkToService } from "@dpploy/server";
+import { addDPPloyNetworkToService } from "@dpploy/server";
 import { describe, expect, it } from "vitest";
 
-describe("addDokployNetworkToService", () => {
+describe("addDPPloyNetworkToService", () => {
 	it("should add network to an empty array", () => {
-		const result = addDokployNetworkToService([]);
-		expect(result).toEqual(["dokploy-network", "default"]);
+		const result = addDPPloyNetworkToService([]);
+		expect(result).toEqual(["dpploy-network", "default"]);
 	});
 
 	it("should not add duplicate network to an array", () => {
-		const result = addDokployNetworkToService(["dokploy-network"]);
-		expect(result).toEqual(["dokploy-network", "default"]);
+		const result = addDPPloyNetworkToService(["dpploy-network"]);
+		expect(result).toEqual(["dpploy-network", "default"]);
 	});
 
 	it("should add network to an existing array with other networks", () => {
-		const result = addDokployNetworkToService(["other-network"]);
-		expect(result).toEqual(["other-network", "dokploy-network", "default"]);
+		const result = addDPPloyNetworkToService(["other-network"]);
+		expect(result).toEqual(["other-network", "dpploy-network", "default"]);
 	});
 
 	it("should add network to an object if networks is an object", () => {
-		const result = addDokployNetworkToService({ "other-network": {} });
+		const result = addDPPloyNetworkToService({ "other-network": {} });
 		expect(result).toEqual({
 			"other-network": {},
-			"dokploy-network": {},
+			"dpploy-network": {},
 			default: {},
 		});
 	});
 
 	it("should not duplicate default network when already present", () => {
-		const result = addDokployNetworkToService(["default", "dokploy-network"]);
-		expect(result).toEqual(["default", "dokploy-network"]);
+		const result = addDPPloyNetworkToService(["default", "dpploy-network"]);
+		expect(result).toEqual(["default", "dpploy-network"]);
 	});
 });

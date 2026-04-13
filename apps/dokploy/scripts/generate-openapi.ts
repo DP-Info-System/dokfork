@@ -9,7 +9,7 @@
 import { writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { generateOpenApiDocument } from "@dokploy/trpc-openapi";
+import { generateOpenApiDocument } from "@dpploy/trpc-openapi";
 import { appRouter } from "../server/api/root";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -20,10 +20,10 @@ async function generateOpenAPI() {
 		console.log("🔄 Generating OpenAPI specification...");
 
 		const openApiDocument = generateOpenApiDocument(appRouter, {
-			title: "Dokploy API",
+			title: "DPPloy API",
 			version: "1.0.0",
-			baseUrl: "https://your-dokploy-instance.com/api",
-			docsUrl: "https://docs.dokploy.com/api",
+			baseUrl: "https://your-dpploy-instance.com/api",
+			docsUrl: "https://docs.dpploy.com/api",
 			tags: [
 				"admin",
 				"docker",
@@ -67,17 +67,17 @@ async function generateOpenAPI() {
 
 		// Enhance metadata
 		openApiDocument.info = {
-			title: "Dokploy API",
+			title: "DPPloy API",
 			description:
-				"Complete API documentation for Dokploy - Deploy applications, manage databases, and orchestrate your infrastructure. This API allows you to programmatically manage all aspects of your Dokploy instance.",
+				"Complete API documentation for DPPloy - Deploy applications, manage databases, and orchestrate your infrastructure. This API allows you to programmatically manage all aspects of your DPPloy instance.",
 			version: "1.0.0",
 			contact: {
-				name: "Dokploy Team",
-				url: "https://dokploy.com",
+				name: "DPPloy Team",
+				url: "https://dpploy.com",
 			},
 			license: {
 				name: "Apache 2.0",
-				url: "https://github.com/dokploy/dokploy/blob/canary/LICENSE",
+				url: "https://github.com/dpploy/dpploy/blob/canary/LICENSE",
 			},
 		};
 
@@ -90,7 +90,7 @@ async function generateOpenAPI() {
 					in: "header",
 					name: "x-api-key",
 					description:
-						"API key authentication. Generate an API key from your Dokploy dashboard under Settings > API Keys.",
+						"API key authentication. Generate an API key from your DPPloy dashboard under Settings > API Keys.",
 				},
 			},
 		};
@@ -105,7 +105,7 @@ async function generateOpenAPI() {
 		// Add external docs
 		openApiDocument.externalDocs = {
 			description: "Full documentation",
-			url: "https://docs.dokploy.com",
+			url: "https://docs.dpploy.com",
 		};
 
 		// Write to root of repo

@@ -61,7 +61,7 @@ const { handler, api } = betterAuth({
 			allowDifferentEmails: true,
 		},
 	},
-	appName: "Dokploy",
+	appName: "DPPloy",
 	socialProviders: {
 		github: {
 			clientId: process.env.GITHUB_CLIENT_ID as string,
@@ -145,12 +145,12 @@ const { handler, api } = betterAuth({
 			create: {
 				before: async (_user, context) => {
 					if (!IS_CLOUD) {
-						const xDokployToken =
-							context?.request?.headers?.get("x-dokploy-token");
-						if (xDokployToken) {
+						const xDPPloyToken =
+							context?.request?.headers?.get("x-dpploy-token");
+						if (xDPPloyToken) {
 							let invitation: Awaited<ReturnType<typeof getUserByToken>>;
 							try {
-								invitation = await getUserByToken(xDokployToken);
+								invitation = await getUserByToken(xDPPloyToken);
 							} catch {
 								throw new APIError("BAD_REQUEST", {
 									message: "Invalid invitation token",
@@ -412,14 +412,14 @@ const { handler, api } = betterAuth({
 					const host =
 						process.env.NODE_ENV === "development"
 							? "http://localhost:3000"
-							: "https://app.dokploy.com";
+							: "https://app.dpploy.com";
 					const inviteLink = `${host}/invitation?token=${data.id}`;
 
 					await sendEmail({
 						email: data.email,
 						subject: "Invitation to join organization",
 						text: `
-					<p>You are invited to join ${data.organization.name} on Dokploy. Click the link to accept the invitation: <a href="${inviteLink}">Accept Invitation</a></p>
+					<p>You are invited to join ${data.organization.name} on DPPloy. Click the link to accept the invitation: <a href="${inviteLink}">Accept Invitation</a></p>
 					`,
 					});
 				}

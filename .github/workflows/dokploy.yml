@@ -1,4 +1,4 @@
-name: Dokploy Docker Build
+name: DPPloy Docker Build
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE_NAME: dokploy/dokploy
+  IMAGE_NAME: dpploy/dpploy
 
 jobs:
   docker-amd:
@@ -29,7 +29,7 @@ jobs:
         run: |
           if [ "${{ github.ref }}" = "refs/heads/main" ]; then
             TAG="latest"
-            VERSION=$(node -p "require('./apps/dokploy/package.json').version")
+            VERSION=$(node -p "require('./apps/dpploy/package.json').version")
           elif [ "${{ github.ref }}" = "refs/heads/canary" ]; then
             TAG="canary"
           else
@@ -39,8 +39,8 @@ jobs:
 
       - name: Prepare env file
         run: |
-          cp apps/dokploy/.env.production.example .env.production
-          cp apps/dokploy/.env.production.example apps/dokploy/.env.production
+          cp apps/dpploy/.env.production.example .env.production
+          cp apps/dpploy/.env.production.example apps/dpploy/.env.production
 
       - name: Build and push
         uses: docker/build-push-action@v5
@@ -67,10 +67,10 @@ jobs:
       - name: Set tag and version
         id: meta
         run: |
-          VERSION=$(node -p "require('./apps/dokploy/package.json').version")
+          VERSION=$(node -p "require('./apps/dpploy/package.json').version")
           if [ "${{ github.ref }}" = "refs/heads/main" ]; then
             TAG="latest"
-            VERSION=$(node -p "require('./apps/dokploy/package.json').version")
+            VERSION=$(node -p "require('./apps/dpploy/package.json').version")
           elif [ "${{ github.ref }}" = "refs/heads/canary" ]; then
             TAG="canary"
           else
@@ -80,8 +80,8 @@ jobs:
 
       - name: Prepare env file
         run: |
-          cp apps/dokploy/.env.production.example .env.production
-          cp apps/dokploy/.env.production.example apps/dokploy/.env.production
+          cp apps/dpploy/.env.production.example .env.production
+          cp apps/dpploy/.env.production.example apps/dpploy/.env.production
 
       - name: Build and push
         uses: docker/build-push-action@v5
@@ -110,7 +110,7 @@ jobs:
       - name: Create and push manifests
         run: |
           if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-            VERSION=$(node -p "require('./apps/dokploy/package.json').version")
+            VERSION=$(node -p "require('./apps/dpploy/package.json').version")
             TAG="latest"
 
             docker buildx imagetools create -t ${IMAGE_NAME}:${TAG} \
@@ -147,7 +147,7 @@ jobs:
       - name: Get version
         id: get_version
         run: |
-          VERSION=$(node -p "require('./apps/dokploy/package.json').version")
+          VERSION=$(node -p "require('./apps/dpploy/package.json').version")
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Create Release

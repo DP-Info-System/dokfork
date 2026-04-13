@@ -104,7 +104,7 @@ docker service create \
     --publish published=3000,target=3000,mode=host \
     --constraint 'node.role == manager' \
     -e ADVERTISE_ADDR="$ADVERTISE_ADDR" \
-    -e DATABASE_URL="postgres://dokploy:$POSTGRES_PASSWORD@dokploy-postgres:5432/dokploy" \
+    -e DATABASE_URL="postgres://dokploy:$POSTGRES_PASSWORD@dpploy-postgres:5432/dokploy" \
     dpploy:latest
 
 # Traefik Setup (Single instance via Docker Run for visibility, matches Dokploy logic)

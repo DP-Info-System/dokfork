@@ -1,5 +1,5 @@
-import type { Registry } from "@dokploy/server";
-import { getRegistryTag } from "@dokploy/server";
+import type { Registry } from "@dpploy/server";
+import { getRegistryTag } from "@dpploy/server";
 import { describe, expect, it } from "vitest";
 
 describe("getRegistryTag", () => {

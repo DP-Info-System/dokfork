@@ -5,7 +5,7 @@ import {
 	getNodeApplications,
 	getNodeInfo,
 	getSwarmNodes,
-} from "@dokploy/server";
+} from "@dpploy/server";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, withPermission } from "../trpc";

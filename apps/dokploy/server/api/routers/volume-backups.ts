@@ -8,18 +8,18 @@ import {
 	runVolumeBackup,
 	scheduleVolumeBackup,
 	updateVolumeBackup,
-} from "@dokploy/server";
-import { db } from "@dokploy/server/db";
+} from "@dpploy/server";
+import { db } from "@dpploy/server/db";
 import {
 	createVolumeBackupSchema,
 	updateVolumeBackupSchema,
 	volumeBackups,
-} from "@dokploy/server/db/schema";
-import { checkServicePermissionAndAccess } from "@dokploy/server/services/permission";
+} from "@dpploy/server/db/schema";
+import { checkServicePermissionAndAccess } from "@dpploy/server/services/permission";
 import {
 	execAsyncRemote,
 	execAsyncStream,
-} from "@dokploy/server/utils/process/execAsync";
+} from "@dpploy/server/utils/process/execAsync";
 import { TRPCError } from "@trpc/server";
 import { observable } from "@trpc/server/observable";
 import { desc, eq } from "drizzle-orm";

@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { paths } from "@dokploy/server/constants";
-import type { Domain } from "@dokploy/server/services/domain";
+import { paths } from "@dpploy/server/constants";
+import type { Domain } from "@dpploy/server/services/domain";
 import { parse, stringify } from "yaml";
 import type { ApplicationNested } from "../builders";
 import { execAsyncRemote } from "../process/execAsync";

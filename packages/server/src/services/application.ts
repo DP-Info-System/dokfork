@@ -1,32 +1,32 @@
-import { docker } from "@dokploy/server/constants";
-import { db } from "@dokploy/server/db";
+import { docker } from "@dpploy/server/constants";
+import { db } from "@dpploy/server/db";
 import {
 	type apiCreateApplication,
 	applications,
 	buildAppName,
-} from "@dokploy/server/db/schema";
-import { getAdvancedStats } from "@dokploy/server/monitoring/utils";
+} from "@dpploy/server/db/schema";
+import { getAdvancedStats } from "@dpploy/server/monitoring/utils";
 import {
 	getBuildCommand,
 	mechanizeDockerContainer,
-} from "@dokploy/server/utils/builders";
-import { sendBuildErrorNotifications } from "@dokploy/server/utils/notifications/build-error";
-import { sendBuildSuccessNotifications } from "@dokploy/server/utils/notifications/build-success";
+} from "@dpploy/server/utils/builders";
+import { sendBuildErrorNotifications } from "@dpploy/server/utils/notifications/build-error";
+import { sendBuildSuccessNotifications } from "@dpploy/server/utils/notifications/build-success";
 import {
 	ExecError,
 	execAsync,
 	execAsyncRemote,
-} from "@dokploy/server/utils/process/execAsync";
-import { cloneBitbucketRepository } from "@dokploy/server/utils/providers/bitbucket";
-import { buildRemoteDocker } from "@dokploy/server/utils/providers/docker";
+} from "@dpploy/server/utils/process/execAsync";
+import { cloneBitbucketRepository } from "@dpploy/server/utils/providers/bitbucket";
+import { buildRemoteDocker } from "@dpploy/server/utils/providers/docker";
 import {
 	cloneGitRepository,
 	getGitCommitInfo,
-} from "@dokploy/server/utils/providers/git";
-import { cloneGiteaRepository } from "@dokploy/server/utils/providers/gitea";
-import { cloneGithubRepository } from "@dokploy/server/utils/providers/github";
-import { cloneGitlabRepository } from "@dokploy/server/utils/providers/gitlab";
-import { createTraefikConfig } from "@dokploy/server/utils/traefik/application";
+} from "@dpploy/server/utils/providers/git";
+import { cloneGiteaRepository } from "@dpploy/server/utils/providers/gitea";
+import { cloneGithubRepository } from "@dpploy/server/utils/providers/github";
+import { cloneGitlabRepository } from "@dpploy/server/utils/providers/gitlab";
+import { createTraefikConfig } from "@dpploy/server/utils/traefik/application";
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import type { z } from "zod";

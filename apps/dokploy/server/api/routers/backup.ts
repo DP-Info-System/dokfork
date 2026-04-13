@@ -26,18 +26,18 @@ import {
 	runWebServerBackup,
 	scheduleBackup,
 	updateBackupById,
-} from "@dokploy/server";
-import { findDestinationById } from "@dokploy/server/services/destination";
-import { checkServicePermissionAndAccess } from "@dokploy/server/services/permission";
-import { runComposeBackup } from "@dokploy/server/utils/backups/compose";
+} from "@dpploy/server";
+import { findDestinationById } from "@dpploy/server/services/destination";
+import { checkServicePermissionAndAccess } from "@dpploy/server/services/permission";
+import { runComposeBackup } from "@dpploy/server/utils/backups/compose";
 import {
 	getS3Credentials,
 	normalizeS3Path,
-} from "@dokploy/server/utils/backups/utils";
+} from "@dpploy/server/utils/backups/utils";
 import {
 	execAsync,
 	execAsyncRemote,
-} from "@dokploy/server/utils/process/execAsync";
+} from "@dpploy/server/utils/process/execAsync";
 import {
 	restoreComposeBackup,
 	restoreLibsqlBackup,
@@ -46,7 +46,7 @@ import {
 	restoreMySqlBackup,
 	restorePostgresBackup,
 	restoreWebServerBackup,
-} from "@dokploy/server/utils/restore";
+} from "@dpploy/server/utils/restore";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import {

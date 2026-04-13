@@ -6,8 +6,8 @@ import {
 	IS_CLOUD,
 	removeRegistry,
 	updateRegistry,
-} from "@dokploy/server";
-import { db } from "@dokploy/server/db";
+} from "@dpploy/server";
+import { db } from "@dpploy/server/db";
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import { audit } from "@/server/api/utils/audit";

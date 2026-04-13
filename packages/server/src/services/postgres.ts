@@ -1,14 +1,14 @@
-import { db } from "@dokploy/server/db";
+import { db } from "@dpploy/server/db";
 import {
 	type apiCreatePostgres,
 	backups,
 	buildAppName,
 	postgres,
-} from "@dokploy/server/db/schema";
-import { generatePassword } from "@dokploy/server/templates";
-import { buildPostgres } from "@dokploy/server/utils/databases/postgres";
-import { pullImage } from "@dokploy/server/utils/docker/utils";
-import { execAsyncRemote } from "@dokploy/server/utils/process/execAsync";
+} from "@dpploy/server/db/schema";
+import { generatePassword } from "@dpploy/server/templates";
+import { buildPostgres } from "@dpploy/server/utils/databases/postgres";
+import { pullImage } from "@dpploy/server/utils/docker/utils";
+import { execAsyncRemote } from "@dpploy/server/utils/process/execAsync";
 import { TRPCError } from "@trpc/server";
 import { eq, getTableColumns } from "drizzle-orm";
 import type { z } from "zod";

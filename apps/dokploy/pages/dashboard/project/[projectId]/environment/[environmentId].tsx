@@ -1,5 +1,5 @@
-import type { findEnvironmentById } from "@dokploy/server";
-import { validateRequest } from "@dokploy/server/lib/auth";
+import type { findEnvironmentById } from "@dpploy/server";
+import { validateRequest } from "@dpploy/server/lib/auth";
 import { createServerSideHelpers } from "@trpc/react-query/server";
 import {
 	Ban,

@@ -1,6 +1,6 @@
-import { db } from "@dokploy/server/db";
-import { notifications } from "@dokploy/server/db/schema";
-import DatabaseBackupEmail from "@dokploy/server/emails/emails/database-backup";
+import { db } from "@dpploy/server/db";
+import { notifications } from "@dpploy/server/db/schema";
+import DatabaseBackupEmail from "@dpploy/server/emails/emails/database-backup";
 import { renderAsync } from "@react-email/components";
 import { format } from "date-fns";
 import { and, eq } from "drizzle-orm";

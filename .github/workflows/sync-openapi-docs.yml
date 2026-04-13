@@ -55,7 +55,7 @@ jobs:
           
           # Configura git
           git config user.name "Dokploy Bot"
-          git config user.email "bot@dokploy.com"
+          git config user.email "bot@dpploy.com"
           
           # Agrega y commitea siempre
           git add apps/docs/public/openapi.json

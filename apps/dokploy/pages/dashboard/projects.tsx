@@ -1,4 +1,4 @@
-import { validateRequest } from "@dokploy/server/lib/auth";
+import { validateRequest } from "@dpploy/server/lib/auth";
 import { createServerSideHelpers } from "@trpc/react-query/server";
 import type { GetServerSidePropsContext } from "next";
 import dynamic from "next/dynamic";

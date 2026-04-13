@@ -1,8 +1,8 @@
-import type { ComposeSpecification } from "@dokploy/server";
+import type { ComposeSpecification } from "@dpploy/server";
 import {
 	addSuffixToVolumesInServices,
 	generateRandomHash,
-} from "@dokploy/server";
+} from "@dpploy/server";
 import { expect, test } from "vitest";
 import { parse } from "yaml";
 

@@ -1,0 +1,1 @@
+ALTER TABLE "notification" ADD COLUMN "dpployBackup" boolean DEFAULT false NOT NULL;

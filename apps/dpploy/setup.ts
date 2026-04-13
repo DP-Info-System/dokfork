@@ -1,0 +1,39 @@
+import { exec } from "node:child_process";
+import { exit } from "node:process";
+import { promisify } from "node:util";
+
+const execAsync = promisify(exec);
+
+import { setupDirectories } from "@dpploy/server/setup/config-paths";
+import { initializePostgres } from "@dpploy/server/setup/postgres-setup";
+import { initializeRedis } from "@dpploy/server/setup/redis-setup";
+import {
+	initializeNetwork,
+	initializeSwarm,
+} from "@dpploy/server/setup/setup";
+import {
+	createDefaultMiddlewares,
+	createDefaultServerTraefikConfig,
+	createDefaultTraefikConfig,
+	initializeStandaloneTraefik,
+	TRAEFIK_VERSION,
+} from "@dpploy/server/setup/traefik-setup";
+
+(async () => {
+	try {
+		setupDirectories();
+		createDefaultMiddlewares();
+		await initializeSwarm();
+		await initializeNetwork();
+		createDefaultTraefikConfig();
+		createDefaultServerTraefikConfig();
+		await execAsync(`docker pull traefik:v${TRAEFIK_VERSION}`);
+		await initializeStandaloneTraefik();
+		await initializeRedis();
+		await initializePostgres();
+		console.log("DPPloy setup completed");
+		exit(0);
+	} catch (e) {
+		console.error("Error in dpploy setup", e);
+	}
+})();

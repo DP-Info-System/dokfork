@@ -50,7 +50,7 @@ import {
 } from "@dpploy/server";
 import { db } from "@dpploy/server/db";
 import { checkPermission } from "@dpploy/server/services/permission";
-import { generateOpenApiDocument } from "@dpploy/trpc-openapi";
+import { generateOpenApiDocument } from "@dokploy/trpc-openapi";
 import { TRPCError } from "@trpc/server";
 import { eq, sql } from "drizzle-orm";
 import { scheduledJobs, scheduleJob } from "node-schedule";

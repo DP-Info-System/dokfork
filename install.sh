@@ -17,7 +17,7 @@ apt-get install -u -y curl git
 # SECTION 3 — INSTALL DOCKER
 if ! command -v docker &> /dev/null; then
     echo "🐳 Installing Docker..."
-    curl -fsSL https://get.docker.com | sh -s -- --version 28.5.0
+    curl -fsSL https://get.docker.com | sh
     systemctl enable docker
     systemctl start docker
 fi

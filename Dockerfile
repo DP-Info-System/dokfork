@@ -14,59 +14,50 @@ RUN apt-get update && apt-get install -y python3 make g++ git python3-pip pkg-co
 # Install dependencies
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
 
-# Deploy only the dpploy app
-
+# Build workspace projects
 ENV NODE_ENV=production
 RUN pnpm --filter=@dpploy/server build
 RUN pnpm --filter=dpploy run build
 
-RUN pnpm --filter=dpploy --prod deploy --legacy /prod/dpploy
-
-RUN cp -R /usr/src/app/apps/dpploy/.next /prod/dpploy/.next
-RUN cp -R /usr/src/app/apps/dpploy/dist /prod/dpploy/dist
-
-FROM base AS dpploy
+FROM base AS runner
 WORKDIR /app
-
-# Set production
 ENV NODE_ENV=production
 
 RUN apt-get update && apt-get install -y curl unzip zip apache2-utils iproute2 rsync git-lfs && git lfs install && rm -rf /var/lib/apt/lists/*
 
-# Copy only the necessary files
-COPY --from=build /prod/dpploy/.next ./.next
-COPY --from=build /prod/dpploy/dist ./dist
-COPY --from=build /prod/dpploy/next.config.mjs ./next.config.mjs
-COPY --from=build /prod/dpploy/public ./public
-COPY --from=build /prod/dpploy/package.json ./package.json
-COPY --from=build /prod/dpploy/drizzle ./drizzle
-COPY .env.production ./.env
-COPY --from=build /prod/dpploy/components.json ./components.json
-COPY --from=build /prod/dpploy/node_modules ./node_modules
+# Copy workspace metadata
+COPY --from=build /usr/src/app/package.json ./package.json
+COPY --from=build /usr/src/app/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=build /usr/src/app/pnpm-workspace.yaml ./pnpm-workspace.yaml
 
+# Copy built server
+COPY --from=build /usr/src/app/packages/server/dist ./packages/server/dist
+COPY --from=build /usr/src/app/packages/server/package.json ./packages/server/package.json
 
-# Install docker
+# Copy dpploy app
+COPY --from=build /usr/src/app/apps/dpploy/.next ./apps/dpploy/.next
+COPY --from=build /usr/src/app/apps/dpploy/dist ./apps/dpploy/dist
+COPY --from=build /usr/src/app/apps/dpploy/public ./apps/dpploy/public
+COPY --from=build /usr/src/app/apps/dpploy/package.json ./apps/dpploy/package.json
+COPY --from=build /usr/src/app/apps/dpploy/next.config.mjs ./apps/dpploy/next.config.mjs
+COPY --from=build /usr/src/app/apps/dpploy/drizzle ./apps/dpploy/drizzle
+COPY --from=build /usr/src/app/apps/dpploy/components.json ./apps/dpploy/components.json
+
+# Install production dependencies only
+RUN pnpm install --prod --no-frozen-lockfile
+
+# Install external tools needed by Dokploy
 RUN curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh --version 28.5.2 && rm get-docker.sh && curl https://rclone.org/install.sh | bash
 
-# Install Nixpacks and tsx
-# | VERBOSE=1 VERSION=1.21.0 bash
-
 ARG NIXPACKS_VERSION=1.41.0
-RUN curl -sSL https://nixpacks.com/install.sh -o install.sh \
-    && chmod +x install.sh \
-    && ./install.sh \
-    && pnpm install -g tsx
-
-# Install Railpack
-ARG RAILPACK_VERSION=0.15.4
-RUN curl -sSL https://railpack.com/install.sh | bash
-
-# Install buildpacks
-COPY --from=buildpacksio/pack:0.39.1 /usr/local/bin/pack /usr/local/bin/pack
+RUN curl -sSL https://nixpacks.com/install.sh -o install.sh && chmod +x install.sh && ./install.sh && pnpm install -g tsx
 
 EXPOSE 3000
 
 HEALTHCHECK --interval=10s --timeout=3s --retries=10 \
   CMD curl -fs http://localhost:3000/api/trpc/settings.health || exit 1
 
-  CMD ["sh", "-c", "pnpm run wait-for-postgres && exec pnpm start"]
+WORKDIR /app/apps/dpploy
+COPY .env.production ./.env
+
+CMD ["sh", "-c", "pnpm run wait-for-postgres && exec pnpm start"]

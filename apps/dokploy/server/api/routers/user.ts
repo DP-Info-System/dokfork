@@ -4,7 +4,7 @@ import {
 	findNotificationById,
 	findOrganizationById,
 	findUserById,
-	getDokployUrl,
+	getDPPloyUrl,
 	getUserByToken,
 	getWebServerSettings,
 	IS_CLOUD,
@@ -631,7 +631,7 @@ export const userRouter = createTRPCRouter({
 			const host =
 				process.env.NODE_ENV === "development"
 					? "http://localhost:3000"
-					: await getDokployUrl();
+					: await getDPPloyUrl();
 			const inviteLink = `${host}/invitation?token=${input.invitationId}`;
 
 			const organization = await findOrganizationById(
@@ -640,7 +640,7 @@ export const userRouter = createTRPCRouter({
 
 			try {
 				const htmlContent = `
-\t\t\t\t<p>You are invited to join ${organization?.name || "organization"} on Dokploy. Click the link to accept the invitation: <a href="${inviteLink}">Accept Invitation</a></p>
+\t\t\t\t<p>You are invited to join ${organization?.name || "organization"} on DPPloy. Click the link to accept the invitation: <a href="${inviteLink}">Accept Invitation</a></p>
 \t\t\t\t`;
 
 				if (email) {

@@ -3,7 +3,7 @@ package containers
 import (
 	"strings"
 
-	"github.com/mauriciogm/dokploy/apps/monitoring/config"
+	"github.com/mauriciogm/dpploy/apps/monitoring/config"
 )
 
 var monitorConfig *MonitoringConfig

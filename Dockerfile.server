@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y python3 make g++ git python3-pip pkg-co
 # Install dependencies
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm --filter=@dpploy/server --filter=./apps/api install --frozen-lockfile
 
-# Deploy only the dokploy app
+# Deploy only the dpploy app
 
 ENV NODE_ENV=production
 RUN pnpm --filter=@dpploy/server build
@@ -24,7 +24,7 @@ RUN pnpm --filter=./apps/api --prod deploy --legacy /prod/api
 
 RUN cp -R /usr/src/app/apps/api/dist /prod/api/dist
 
-FROM base AS dokploy
+FROM base AS dpploy
 WORKDIR /app
 
 # Set production

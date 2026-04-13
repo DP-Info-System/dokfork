@@ -46,7 +46,7 @@ COPY --from=build /usr/src/app/apps/dpploy/components.json ./apps/dpploy/compone
 # Install production dependencies only
 RUN pnpm install --prod --no-frozen-lockfile
 
-# Install external tools needed by Dokploy
+# Install external tools needed by DPPloy
 RUN curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh --version 28.5.2 && rm get-docker.sh && curl https://rclone.org/install.sh | bash
 
 ARG NIXPACKS_VERSION=1.41.0

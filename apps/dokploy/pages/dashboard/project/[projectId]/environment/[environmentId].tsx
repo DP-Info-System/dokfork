@@ -390,7 +390,7 @@ const EnvironmentPage = (
 			{ enabled: !!selectedTargetProject },
 		);
 	const { config: whitelabeling } = useWhitelabeling();
-	const appName = whitelabeling?.appName || "Dokploy";
+	const appName = whitelabeling?.appName || "DPPloy";
 
 	const emptyServices =
 		!currentEnvironment ||
@@ -829,7 +829,7 @@ const EnvironmentPage = (
 		return Array.from(servers.values());
 	}, [applications]);
 
-	// Check if there are services without a server (Dokploy server)
+	// Check if there are services without a server (DPPloy server)
 	const hasServicesWithoutServer = useMemo(() => {
 		if (!applications) return false;
 		return applications.some((service) => !service.serverId);
@@ -846,7 +846,7 @@ const EnvironmentPage = (
 				(selectedTypes.length === 0 || selectedTypes.includes(service.type)) &&
 				(selectedServerId === "" ||
 					selectedServerId === "all" ||
-					(selectedServerId === "dokploy-server" && !service.serverId) ||
+					(selectedServerId === "dpploy-server" && !service.serverId) ||
 					service.serverId === selectedServerId),
 		);
 		return sortServices(filtered);
@@ -1426,10 +1426,10 @@ const EnvironmentPage = (
 												<SelectContent>
 													<SelectItem value="all">All servers</SelectItem>
 													{hasServicesWithoutServer && (
-														<SelectItem value="dokploy-server">
+														<SelectItem value="dpploy-server">
 															<div className="flex items-center gap-2">
 																<ServerIcon className="size-4" />
-																<span>Dokploy server</span>
+																<span>DPPloy server</span>
 															</div>
 														</SelectItem>
 													)}

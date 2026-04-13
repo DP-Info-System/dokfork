@@ -54,14 +54,14 @@ fi
 
 # SECTION 7 — NETWORKING & SECRETS
 echo "🕸️ Setting up overlay network..."
-docker network create --driver overlay --attachable dokploy-network 2>/dev/null || true
+docker network create --driver overlay --attachable dpploy-network 2>/dev/null || true
 
 echo "🔑 Generating secure database credentials..."
 generate_random_password() {
     openssl rand -base64 32 | tr -d "=+/" | cut -c1-32
 }
 POSTGRES_PASSWORD=$(generate_random_password)
-echo "$POSTGRES_PASSWORD" | docker secret create dokploy_postgres_password - 2>/dev/null || true
+echo "$POSTGRES_PASSWORD" | docker secret create dpploy_postgres_password - 2>/dev/null || true
 
 # SECTION 8 — BUILD IMAGE
 echo "🏗️ Building DPploy image locally (this may take a few minutes)..."
@@ -71,48 +71,48 @@ docker build -t dpploy:latest .
 echo "🚀 Deploying services to Swarm..."
 
 # Cleanup existing services to avoid conflicts on re-run
-docker service rm dokploy-postgres dokploy-redis dokploy 2>/dev/null || true
+docker service rm dpploy-postgres dpploy-redis dpploy 2>/dev/null || true
 
 # Postgres Service
 docker service create \
-    --name dokploy-postgres \
+    --name dpploy-postgres \
     --constraint 'node.role==manager' \
-    --network dokploy-network \
-    --env POSTGRES_USER=dokploy \
-    --env POSTGRES_DB=dokploy \
-    --secret source=dokploy_postgres_password,target=/run/secrets/postgres_password \
+    --network dpploy-network \
+    --env POSTGRES_USER=dpploy \
+    --env POSTGRES_DB=dpploy \
+    --secret source=dpploy_postgres_password,target=/run/secrets/postgres_password \
     --env POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password \
-    --mount type=volume,source=dokploy-postgres,target=/var/lib/postgresql/data \
+    --mount type=volume,source=dpploy-postgres,target=/var/lib/postgresql/data \
     postgres:16-alpine
 
 # Redis Service
 docker service create \
-    --name dokploy-redis \
+    --name dpploy-redis \
     --constraint 'node.role==manager' \
-    --network dokploy-network \
-    --mount type=volume,source=dokploy-redis,target=/data \
+    --network dpploy-network \
+    --mount type=volume,source=dpploy-redis,target=/data \
     redis:7-alpine
 
 # DPploy App Service
 docker service create \
-    --name dokploy \
+    --name dpploy \
     --replicas 1 \
-    --network dokploy-network \
+    --network dpploy-network \
     --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
-    --mount type=bind,source=/etc/dokploy,target=/etc/dokploy \
-    --secret source=dokploy_postgres_password,target=/run/secrets/postgres_password \
+    --mount type=bind,source=/etc/dpploy,target=/etc/dpploy \
+    --secret source=dpploy_postgres_password,target=/run/secrets/postgres_password \
     --publish published=3000,target=3000,mode=host \
     --constraint 'node.role == manager' \
     -e ADVERTISE_ADDR="$ADVERTISE_ADDR" \
-    -e DATABASE_URL="postgres://dokploy:$POSTGRES_PASSWORD@dpploy-postgres:5432/dokploy" \
+    -e DATABASE_URL="postgres://dpploy:$POSTGRES_PASSWORD@dpploy-postgres:5432/dpploy" \
     dpploy:latest
 
-# Traefik Setup (Single instance via Docker Run for visibility, matches Dokploy logic)
-docker rm -f dokploy-traefik 2>/dev/null || true
+# Traefik Setup (Single instance via Docker Run for visibility, matches DPPloy logic)
+docker rm -f dpploy-traefik 2>/dev/null || true
 docker run -d \
-    --name dokploy-traefik \
+    --name dpploy-traefik \
     --restart always \
-    --network dokploy-network \
+    --network dpploy-network \
     -v /var/run/docker.sock:/var/run/docker.sock:ro \
     -p 80:80 \
     -p 443:443 \

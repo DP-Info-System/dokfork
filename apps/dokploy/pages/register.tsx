@@ -275,7 +275,7 @@ const Register = ({ isCloud }: Props) => {
 									Need help?
 									<Link
 										className="underline"
-										href="https://dokploy.com"
+										href="https://dpploy.com"
 										target="_blank"
 									>
 										Contact us

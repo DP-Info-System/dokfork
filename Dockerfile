@@ -12,15 +12,15 @@ WORKDIR /usr/src/app
 RUN apt-get update && apt-get install -y python3 make g++ git python3-pip pkg-config libsecret-1-dev && rm -rf /var/lib/apt/lists/*
 
 # Install dependencies
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
 
 # Deploy only the dpploy app
 
 ENV NODE_ENV=production
 RUN pnpm --filter=@dpploy/server build
-RUN pnpm --filter=./apps/dpploy run build
+RUN pnpm --filter=dpploy run build
 
-RUN pnpm --filter=./apps/dpploy --prod deploy --legacy /prod/dpploy
+RUN pnpm --filter=dpploy --prod deploy --legacy /prod/dpploy
 
 RUN cp -R /usr/src/app/apps/dpploy/.next /prod/dpploy/.next
 RUN cp -R /usr/src/app/apps/dpploy/dist /prod/dpploy/dist

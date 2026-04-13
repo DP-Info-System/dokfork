@@ -1,6 +1,6 @@
-import type { apiRestoreBackup } from "@dokploy/server/db/schema";
-import type { Destination } from "@dokploy/server/services/destination";
-import type { Mongo } from "@dokploy/server/services/mongo";
+import type { apiRestoreBackup } from "@dpploy/server/db/schema";
+import type { Destination } from "@dpploy/server/services/destination";
+import type { Mongo } from "@dpploy/server/services/mongo";
 import type { z } from "zod";
 import { getS3Credentials } from "../backups/utils";
 import { execAsync, execAsyncRemote } from "../process/execAsync";

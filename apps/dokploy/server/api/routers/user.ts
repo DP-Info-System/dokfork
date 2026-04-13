@@ -12,9 +12,9 @@ import {
 	sendEmailNotification,
 	sendResendNotification,
 	updateUser,
-} from "@dokploy/server";
-import { db } from "@dokploy/server/db";
-import { hasValidLicense } from "@dokploy/server/services/proprietary/license-key";
+} from "@dpploy/server";
+import { db } from "@dpploy/server/db";
+import { hasValidLicense } from "@dpploy/server/services/proprietary/license-key";
 import {
 	account,
 	apiAssignPermissions,
@@ -24,11 +24,11 @@ import {
 	invitation,
 	member,
 	user,
-} from "@dokploy/server/db/schema";
+} from "@dpploy/server/db/schema";
 import {
 	hasPermission,
 	resolvePermissions,
-} from "@dokploy/server/services/permission";
+} from "@dpploy/server/services/permission";
 import { TRPCError } from "@trpc/server";
 import * as bcrypt from "bcrypt";
 import { and, asc, eq, gt } from "drizzle-orm";

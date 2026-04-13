@@ -12,7 +12,7 @@ import {
 	initVolumeBackupsCronJobs,
 	sendDokployRestartNotifications,
 	setupDirectories,
-} from "@dokploy/server";
+} from "@dpploy/server";
 import { config } from "dotenv";
 import next from "next";
 import packageInfo from "../package.json";

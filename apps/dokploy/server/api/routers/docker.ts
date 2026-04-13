@@ -9,7 +9,7 @@ import {
 	getServiceContainersByAppName,
 	getStackContainersByAppName,
 	uploadFileToContainer,
-} from "@dokploy/server";
+} from "@dpploy/server";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { audit } from "@/server/api/utils/audit";

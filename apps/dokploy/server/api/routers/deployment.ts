@@ -10,12 +10,12 @@ import {
 	removeDeployment,
 	resolveServicePath,
 	updateDeploymentStatus,
-} from "@dokploy/server";
-import { db } from "@dokploy/server/db";
+} from "@dpploy/server";
+import { db } from "@dpploy/server/db";
 import {
 	checkServicePermissionAndAccess,
 	findMemberByUserId,
-} from "@dokploy/server/services/permission";
+} from "@dpploy/server/services/permission";
 import { TRPCError } from "@trpc/server";
 import { desc, eq } from "drizzle-orm";
 import { z } from "zod";

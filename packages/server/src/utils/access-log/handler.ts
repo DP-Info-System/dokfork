@@ -1,10 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
-import { paths } from "@dokploy/server/constants";
+import { paths } from "@dpploy/server/constants";
 import {
 	getWebServerSettings,
 	updateWebServerSettings,
-} from "@dokploy/server/services/web-server-settings";
+} from "@dpploy/server/services/web-server-settings";
 import { scheduledJobs, scheduleJob } from "node-schedule";
 import { execAsync } from "../process/execAsync";
 

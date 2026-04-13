@@ -8,7 +8,7 @@ import {
 	updateApplicationStatus,
 	updateCompose,
 	updatePreviewDeployment,
-} from "@dokploy/server";
+} from "@dpploy/server";
 import type { DeployJob } from "./schema.js";
 
 export const deploy = async (job: DeployJob) => {

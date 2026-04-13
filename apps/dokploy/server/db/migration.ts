@@ -1,4 +1,4 @@
-import { dbUrl } from "@dokploy/server/db";
+import { dbUrl } from "@dpploy/server/db";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
 import postgres from "postgres";

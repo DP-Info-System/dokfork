@@ -1,6 +1,6 @@
 "use client";
 
-import type { AuditLog } from "@dokploy/server/db/schema";
+import type { AuditLog } from "@dpploy/server/db/schema";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import {
 	type ColumnDef,

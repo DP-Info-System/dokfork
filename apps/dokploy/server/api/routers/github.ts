@@ -6,8 +6,8 @@ import {
 	haveGithubRequirements,
 	updateGithub,
 	updateGitProvider,
-} from "@dokploy/server";
-import { db } from "@dokploy/server/db";
+} from "@dpploy/server";
+import { db } from "@dpploy/server/db";
 import { TRPCError } from "@trpc/server";
 import {
 	createTRPCRouter,

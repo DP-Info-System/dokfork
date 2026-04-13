@@ -15,9 +15,9 @@ import {
 	setupMonitoring,
 	updateServerById,
 	getAccessibleServerIds,
-} from "@dokploy/server";
-import { db } from "@dokploy/server/db";
-import { hasValidLicense } from "@dokploy/server/services/proprietary/license-key";
+} from "@dpploy/server";
+import { db } from "@dpploy/server/db";
+import { hasValidLicense } from "@dpploy/server/services/proprietary/license-key";
 import { TRPCError } from "@trpc/server";
 import { observable } from "@trpc/server/observable";
 import { and, desc, eq, getTableColumns, isNotNull, sql } from "drizzle-orm";

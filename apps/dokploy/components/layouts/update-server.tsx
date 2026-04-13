@@ -1,4 +1,4 @@
-import type { IUpdateData } from "@dokploy/server/index";
+import type { IUpdateData } from "@dpploy/server/index";
 import { Download } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { api } from "@/utils/api";

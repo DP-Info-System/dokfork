@@ -1,12 +1,12 @@
 import { join } from "node:path";
-import { paths } from "@dokploy/server/constants";
-import type { apiGitlabTestConnection } from "@dokploy/server/db/schema";
+import { paths } from "@dpploy/server/constants";
+import type { apiGitlabTestConnection } from "@dpploy/server/db/schema";
 import {
 	findGitlabById,
 	type Gitlab,
 	updateGitlab,
-} from "@dokploy/server/services/gitlab";
-import type { InferResultType } from "@dokploy/server/types/with";
+} from "@dpploy/server/services/gitlab";
+import type { InferResultType } from "@dpploy/server/types/with";
 import { TRPCError } from "@trpc/server";
 import type { z } from "zod";
 
